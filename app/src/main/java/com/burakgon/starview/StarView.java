@@ -29,6 +29,8 @@ public class StarView extends RelativeLayout {
     private Handler mHandler;
     private int heightOfScreen,widthOfSreen; //screen sizes
     private ArrayList<ImageView> topStarList,rightStarList; //dynamically created imageviews (star)
+    private int[] starAnimTime = {500, 1000, 1500 , 2000};
+    Random rand = new Random();
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -44,8 +46,8 @@ public class StarView extends RelativeLayout {
     }
 
     @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
+    protected void finalize() throws Throwable {
+        super.finalize();
 
         //we stop our thread so we wont use phone resources for nothing
         stopTopStarRepeatingTask();
@@ -57,13 +59,17 @@ public class StarView extends RelativeLayout {
         @Override
         public void run() {
             try {
-                Random rand = new Random();
-                int starNum = rand.nextInt(topStarList.size()); //getting random star
-                anim.setDuration(rand.nextInt(1000)+1000); //random animation duration
-                topStarList.get(starNum).startAnimation(anim); //starting animation
+
+                for (int i = 0 ; i<topStarList.size()/3;i++){
+                    //we need different animation object for different durations
+                    Animation ani = AnimationUtils.loadAnimation(view.getContext(),R.anim.topright_to_bottomleft);
+                    ani.setDuration(starAnimTime[i%4]);
+                    int starNum = rand.nextInt(topStarList.size());//getting random star
+                    topStarList.get(starNum).startAnimation(ani); //starting animation
+                }
 
             } finally {
-                mHandler.postDelayed(mTopStarThread, 2000); //starting thread again for loop
+                mHandler.postDelayed(mTopStarThread, rand.nextInt(1000)+1000); //starting thread again for loop
             }
         }
     };
@@ -83,15 +89,16 @@ public class StarView extends RelativeLayout {
         @Override
         public void run() {
             try {
-                Random rand = new Random();
-                int starNum = rand.nextInt(rightStarList.size());
-                anim.setDuration(rand.nextInt(1000)+1000);
-                rightStarList.get(starNum).startAnimation(anim);
+                for (int i = 0 ; i<rightStarList.size()/3;i++){
+                    //we need different animation object for different durations
+                    Animation ani = AnimationUtils.loadAnimation(view.getContext(),R.anim.topright_to_bottomleft);
+                    ani.setDuration(starAnimTime[i%4]);
+                    int starNum = rand.nextInt(topStarList.size());//getting random star
+                    rightStarList.get(starNum).startAnimation(ani); //starting animation
+                }
 
             } finally {
-                // 100% guarantee that this always happens, even if
-                // your update method throws an exception
-                mHandler.postDelayed(mRightStarThread, 2000);
+                mHandler.postDelayed(mRightStarThread, rand.nextInt(1000)+1000); //starting thread again for loop
             }
         }
     };
