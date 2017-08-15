@@ -29,7 +29,7 @@ public class StarView extends RelativeLayout {
     private Handler mHandler;
     private int heightOfScreen,widthOfSreen; //screen sizes
     private ArrayList<ImageView> topStarList,rightStarList; //dynamically created imageviews (star)
-    private int[] starAnimTime = {500, 1000, 1500 , 2000};
+    private int[] starAnimTime = {1000, 1500 , 2000};
     Random rand = new Random();
     @Override
     protected void onFinishInflate() {
@@ -63,7 +63,7 @@ public class StarView extends RelativeLayout {
                 for (int i = 0 ; i<topStarList.size()/3;i++){
                     //we need different animation object for different durations
                     Animation ani = AnimationUtils.loadAnimation(view.getContext(),R.anim.topright_to_bottomleft);
-                    ani.setDuration(starAnimTime[i%4]);
+                    ani.setDuration(starAnimTime[i%3]);
                     int starNum = rand.nextInt(topStarList.size());//getting random star
                     topStarList.get(starNum).startAnimation(ani); //starting animation
                 }
@@ -92,7 +92,7 @@ public class StarView extends RelativeLayout {
                 for (int i = 0 ; i<rightStarList.size()/3;i++){
                     //we need different animation object for different durations
                     Animation ani = AnimationUtils.loadAnimation(view.getContext(),R.anim.topright_to_bottomleft);
-                    ani.setDuration(starAnimTime[i%4]);
+                    ani.setDuration(starAnimTime[i%3]);
                     int starNum = rand.nextInt(topStarList.size());//getting random star
                     rightStarList.get(starNum).startAnimation(ani); //starting animation
                 }
@@ -121,6 +121,14 @@ public class StarView extends RelativeLayout {
         display.getSize(size);
         widthOfSreen = size.x;
         heightOfScreen = size.y;
+
+        //we are setting our screen size for bigger side so we wont have empty space if orientation is changed
+        if (widthOfSreen>heightOfScreen){
+            heightOfScreen = widthOfSreen;
+        }
+        if (heightOfScreen>widthOfSreen){
+            widthOfSreen = heightOfScreen;
+        }
     }
 
     public StarView(Context context) {
